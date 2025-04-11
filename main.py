@@ -11,10 +11,11 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivy.metrics import dp
-
+from kivy.uix.label import Label
+from kivy.core.window import Window
+import random
 
 Builder.load_file("secret_recipe_app.kv")
-
 
 class HomeScreen(Screen):
     def on_enter(self):
@@ -120,16 +121,19 @@ class RecipeApp(MDApp):
 
         detail_screen.ingredients = ingredients
         if 'no_result_img' in detail_screen.ids:
-                detail_screen.ids.no_result_img.opacity = 0
+            detail_screen.ids.no_result_img.opacity = 0
 
-        self.play_details_music_once()        
+        self.play_details_music_once()
         self.sm.current = "detail"
+
+        # Show the cute toast message when recipe displayed!
+        self.show_toast()
 
     def show_no_results(self):
         detail_screen = self.sm.get_screen("detail")
-        detail_screen.title = "Sorry, we couldn't find any matching recipes."
+        detail_screen.title = "Sorry, no matching recipes."
         detail_screen.instructions = " "
-        detail_screen.ingredients = " "
+        detail_screen.ingredients = []
         self.play_details_music_once()
         self.sm.current = "detail"
         if 'no_result_img' in detail_screen.ids:
@@ -143,6 +147,51 @@ class RecipeApp(MDApp):
             self.details_music.loop = True
             self.details_music.volume = 0.3
             self.details_music.play()
+
+    def show_toast(self):
+        messages = [
+            "New Recipe Unlocked!",
+            "Wow, time to try something new!",
+            "You have unlocked a new cooking skill!",
+            "A delicious surprise awaits!",
+            "A magical recipe just appeared!",
+            "You're cooking up greatness!"
+        ]
+        message = random.choice(messages)
+
+        toast = Label(
+            text=message,
+            size_hint=(None, None),
+            size=(dp(300), dp(50)),
+            pos=(Window.width / 2 - dp(150), Window.height),
+            color=(1, 1, 1, 1),
+            halign='center',
+            valign='middle',
+            font_size='18sp',
+            bold=True
+        )
+
+        with toast.canvas.before:
+            from kivy.graphics import Color, RoundedRectangle, Line
+            Color(1, 0.8, 0.9, 1)
+            toast.bg = RoundedRectangle(size=toast.size, pos=toast.pos, radius=[20])
+            Color(0.4, 0.26, 0.13, 1)
+            toast.border = Line(rounded_rectangle=(toast.x, toast.y, toast.width, toast.height, 20), width=1.2)
+
+        def update_bg(*args):
+            toast.bg.size = toast.size
+            toast.bg.pos = toast.pos
+            toast.border.rounded_rectangle = (toast.x, toast.y, toast.width, toast.height, 20)
+
+        toast.bind(pos=update_bg, size=update_bg)
+
+        Window.add_widget(toast)
+
+        anim = (Animation(y=Window.height - dp(120), duration=0.4, t='out_back') +
+                Animation(y=Window.height - dp(100), duration=0.2, t='out_bounce') +
+                Animation(opacity=0, duration=4.5))
+        anim.bind(on_complete=lambda *x: Window.remove_widget(toast))
+        anim.start(toast)
 
 if __name__ == "__main__":
     RecipeApp().run()
