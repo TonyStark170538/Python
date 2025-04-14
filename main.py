@@ -23,12 +23,12 @@ class HomeScreen(Screen):
         if chef:
             self.animate_chef(chef)
 
-    def animate_chef(self, widget):
+    def animate_chef(self, widget):   # not if sure it work?
         anim = Animation(y=widget.y + 10, duration=0.5) + Animation(y=widget.y, duration=0.5)
         anim.repeat = True
         anim.start(widget)
 
-    def search_recipe(self):
+    def search_recipe(self):    # sound
         query = self.ids.search_input.text.strip()
         if query:
             app = MDApp.get_running_app()
@@ -55,7 +55,7 @@ class DetailScreen(Screen):
         anim.repeat = True
         anim.start(widget)
 
-    def on_ingredients(self, instance, value):
+    def on_ingredients(self, instance, value):   # ingredients don't work
         self.ids.ingredients_list.data = [
             {
                 "text": f"- {item}",
@@ -80,7 +80,7 @@ class RecipeApp(MDApp):
         if sound:
             sound.play()
 
-    def get_recipes_by_name(self, name):
+    def get_recipes_by_name(self, name):   # recipe by name
         url = f"https://www.themealdb.com/api/json/v1/1/search.php?s={name}"
         UrlRequest(url, self.show_recipes)
 
@@ -91,7 +91,7 @@ class RecipeApp(MDApp):
         else:
             self.show_no_results()
 
-    def get_random_recipe(self):
+    def get_random_recipe(self):   # random recipe
         url = "https://www.themealdb.com/api/json/v1/1/random.php"
         UrlRequest(url, self.show_random_recipe)
 
@@ -104,14 +104,14 @@ class RecipeApp(MDApp):
         self.play_sound("music/transition.wav")
         self.score += 1
         home = self.sm.get_screen("home")
-        if home.ids.get("score_label"):
+        if home.ids.get("score_label"):   # score don't work
             home.ids.score_label.text = f"Score: {self.score}"
 
         detail_screen = self.sm.get_screen("detail")
         detail_screen.title = meal.get("strMeal", "")
         detail_screen.instructions = meal.get("strInstructions", "")
 
-        ingredients = []
+        ingredients = []   # ingr don't work
         for i in range(1, 21):
             ingredient = meal.get(f"strIngredient{i}")
             measure = meal.get(f"strMeasure{i}")
@@ -126,7 +126,7 @@ class RecipeApp(MDApp):
         self.play_details_music_once()
         self.sm.current = "detail"
 
-        # Show the cute toast message when recipe displayed!
+        # Show the cute toast message when recipe displayed
         self.show_toast()
 
     def show_no_results(self):
@@ -139,7 +139,7 @@ class RecipeApp(MDApp):
         if 'no_result_img' in detail_screen.ids:
             detail_screen.ids.no_result_img.opacity = 1
 
-    def play_details_music_once(self):
+    def play_details_music_once(self):   # music loop
         if not hasattr(self, 'music_started'):
             self.music_started = True
             self.details_music = SoundLoader.load("music/details_music.mp3")
@@ -148,11 +148,11 @@ class RecipeApp(MDApp):
             self.details_music.volume = 0.3
             self.details_music.play()
 
-    def show_toast(self):
+    def show_toast(self):    # pop-up toast massage
         messages = [
             "New Recipe Unlocked!",
             "Wow, time to try something new!",
-            "You have unlocked a new cooking skill!",
+            "You unlocked new cooking skill!",
             "A delicious surprise awaits!",
             "A magical recipe just appeared!",
             "You're cooking up greatness!"
