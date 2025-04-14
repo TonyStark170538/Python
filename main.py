@@ -23,7 +23,7 @@ class HomeScreen(Screen):
         if chef:
             self.animate_chef(chef)
 
-    def animate_chef(self, widget):   # not if sure it work?
+    def animate_chef(self, widget):   # not sure if it work?
         anim = Animation(y=widget.y + 10, duration=0.5) + Animation(y=widget.y, duration=0.5)
         anim.repeat = True
         anim.start(widget)
@@ -40,7 +40,7 @@ class HomeScreen(Screen):
         app.play_sound("music/back_music.mp3")
         app.get_random_recipe()
 
-class DetailScreen(Screen):
+class DetailScreen(Screen):  # main screen with recipe
     title = StringProperty("")
     instructions = StringProperty("")
     ingredients = ListProperty([])
@@ -50,7 +50,7 @@ class DetailScreen(Screen):
         if chef:
             self.animate_chef(chef)
 
-    def animate_chef(self, widget):
+    def animate_chef(self, widget):  # not sure if I need it
         anim = Animation(y=widget.y + 10, duration=0.5) + Animation(y=widget.y, duration=0.5)
         anim.repeat = True
         anim.start(widget)
@@ -129,7 +129,7 @@ class RecipeApp(MDApp):
         # Show the cute toast message when recipe displayed
         self.show_toast()
 
-    def show_no_results(self):
+    def show_no_results(self):    # no recipe
         detail_screen = self.sm.get_screen("detail")
         detail_screen.title = "Sorry, no matching recipes."
         detail_screen.instructions = " "
@@ -185,7 +185,7 @@ class RecipeApp(MDApp):
 
         toast.bind(pos=update_bg, size=update_bg)
 
-        Window.add_widget(toast)
+        Window.add_widget(toast)    # stil massage
 
         anim = (Animation(y=Window.height - dp(120), duration=0.4, t='out_back') +
                 Animation(y=Window.height - dp(100), duration=0.2, t='out_bounce') +
