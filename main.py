@@ -18,16 +18,6 @@ import random
 Builder.load_file("secret_recipe_app.kv")
 
 class HomeScreen(Screen):
-    def on_enter(self):
-        chef = self.ids.get("chef_anim")
-        if chef:
-            self.animate_chef(chef)
-
-    def animate_chef(self, widget):   # not sure if it work?
-        anim = Animation(y=widget.y + 10, duration=0.5) + Animation(y=widget.y, duration=0.5)
-        anim.repeat = True
-        anim.start(widget)
-
     def search_recipe(self):    # sound
         query = self.ids.search_input.text.strip()
         if query:
@@ -44,16 +34,6 @@ class DetailScreen(Screen):  # main screen with recipe
     title = StringProperty("")
     instructions = StringProperty("")
     ingredients = ListProperty([])
-
-    def on_enter(self):
-        chef = self.ids.get("chef_anim")
-        if chef:
-            self.animate_chef(chef)
-
-    def animate_chef(self, widget):  # not sure if I need it
-        anim = Animation(y=widget.y + 10, duration=0.5) + Animation(y=widget.y, duration=0.5)
-        anim.repeat = True
-        anim.start(widget)
 
     def on_ingredients(self, instance, value):   # ingredients don't work
         self.ids.ingredients_list.data = [
@@ -111,13 +91,13 @@ class RecipeApp(MDApp):
         detail_screen.title = meal.get("strMeal", "")
         detail_screen.instructions = meal.get("strInstructions", "")
 
-        ingredients = []   # ingr don't work
+        ingredients = ""   # still don't work
         for i in range(1, 21):
             ingredient = meal.get(f"strIngredient{i}")
             measure = meal.get(f"strMeasure{i}")
             if ingredient and ingredient.strip():
                 measure = measure.strip() if measure else ""
-                ingredients.append(f"{measure} {ingredient.strip()}")
+                ingredients += f", {measure} {ingredient.strip()}"
 
         detail_screen.ingredients = ingredients
         if 'no_result_img' in detail_screen.ids:
