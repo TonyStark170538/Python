@@ -33,9 +33,21 @@ class HomeScreen(Screen):
 class DetailScreen(Screen):  # main screen with recipe
     title = StringProperty("")
     instructions = StringProperty("")
-    ingredients = StringProperty("")
+    ingredients = StringProperty("") # FIXED (Replaced ListProperty() with StringProperty())
+    
+# FIXED (Unneeded function if StringProperty() is used)
+#    def on_ingredients(self, instance, value):   # ingredients don't work
+#        self.ids.ingredients_list.data = [
+#            {
+#                "text": f"- {item}",
+#                "theme_text_color": "Custom",
+#                "text_color": (0.4, 0.26, 0.13, 1)
+#            } for item in value if item.strip()
+#        ]
 
 class RecipeApp(MDApp):
+    score = NumericProperty(0)
+
     def build(self):
         self.theme_cls.primary_palette = "Brown"
         self.theme_cls.accent_palette = "Pink"
@@ -71,13 +83,17 @@ class RecipeApp(MDApp):
 
     def display_recipe(self, meal):
         self.play_sound("music/transition.wav")
+        self.score += 1
         home = self.sm.get_screen("home")
+        if home.ids.get("score_label"):   # score don't work
+            home.ids.score_label.text = f"Score: {self.score}"
+
         detail_screen = self.sm.get_screen("detail")
         
         detail_screen.title = meal.get("strMeal", "")
         detail_screen.instructions = meal.get("strInstructions", "")
         
-        ingredients = "" 
+        ingredients = "" # FIXED (Replaced List type with String)
         for i in range(1, 21):
             ingredient = meal.get(f"strIngredient{i}")
             measure = meal.get(f"strMeasure{i}")
@@ -100,7 +116,7 @@ class RecipeApp(MDApp):
         detail_screen = self.sm.get_screen("detail")
         detail_screen.title = "Sorry, no matching recipes."
         detail_screen.instructions = ""
-        detail_screen.ingredients = "" 
+        detail_screen.ingredients = "" # FIXED (Replaced List type with String)
         self.play_details_music_once()
         self.sm.current = "detail"
         if 'no_result_img' in detail_screen.ids:
